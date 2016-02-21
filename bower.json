@@ -1,0 +1,27 @@
+{
+  "name": "kwc-field",
+  "version": "0.1.0",
+  "description": "This component shows a field and helps to manage validation",
+  "license": "MIT",
+  "main": "kwc-field.html",
+  "keywords": [
+    "polymer",
+    "web-component",
+    "callout"
+  ],
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "node_modules",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0"
+  },
+  "homepage": "https://github.com/successk/kwc-field",
+  "authors": [
+    "Gaëtan Rizio <gaetan@rizio.fr>"
+  ],
+  "moduleType": []
+}

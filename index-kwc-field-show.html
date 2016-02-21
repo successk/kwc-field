@@ -1,0 +1,94 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="kwc-field.html">
+
+<dom-module id="index-kwc-field-show">
+  <template>
+    <kwc-field id="username" delay-async="500">
+      <span class="kwc-field-label">Username</span>
+      <input type="text" name="username" required pattern="[a-zA-Z0-9_-]+" maxlength="15" placeholder="Use letters, numbers '_' and '-' only" value="{{user.username::input}}"
+      class="kwc-field-field">
+    </kwc-field>
+
+    <kwc-field id="password">
+      <span class="kwc-field-label">Password</span>
+      <input type="password" name="password" required placeholder="Your strong password (at least 8 characters)" value="{{user.password::input}}" class="kwc-field-field">
+    </kwc-field>
+
+    <kwc-field id="password2">
+      <span class="kwc-field-label">Confirm</span>
+      <input type="password" name="password2" required placeholder="Confirm your password" value="{{user.password2::input}}" class="kwc-field-field">
+    </kwc-field>
+
+    <kwc-field id="email" delay-async="1000">
+      <span class="kwc-field-label">Email</span>
+      <input type="email" name="email" required placeholder="Your email address" value="{{user.email::input}}" class="kwc-field-field">
+    </kwc-field>
+
+    <kwc-field id="comment">
+      <span class="kwc-field-label">Comment</span>
+      <textarea name="comment" placeholder="any comment here" value="{{user.comment::input}}" class="kwc-field-field"></textarea>
+    </kwc-field>
+
+    <kwc-field id="sex">
+      <span class="kwc-field-label">Sex</span>
+      <select name="sex" value="{{user.sex::input}}" class="kwc-field-field">
+        <option value="undefined">Select…</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+      </select>
+    </kwc-field>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'index-kwc-field-show',
+      
+      properties: {
+        user: {
+          type: Object,
+          value: {}
+        }
+      },
+      
+      attached: function() {
+        var that = this
+        this.$.password.verify("The password is too short", function(value){
+          return value !== null && value.length > 8
+        })
+        
+        this.$.password.verify("The password should contains letters", function(value){
+          return value !== null && /(.*)[a-zA-Z](.*)/.test(value)
+        })
+        
+        this.$.password2.verify("This password must match the first one", function(value){
+          return value !== null && value === that.$.password.value
+        })
+        
+        this.$.username.verifyAsync("This username is used", function(value){
+          if (value === "exist" || value === "boss" || value === "a-username-somebody-wont-think-of-it") {
+            return Promise.resolve(false)
+          } else {
+            return Promise.resolve(true)
+          }
+        })
+        
+        this.$.email.verifyAsync("This email is used", function(value){
+          return new Promise(function(resolve, reject){
+            setTimeout(function(){
+              resolve(value !== "ex@ist")
+            }, 1000)
+          })
+        })
+        
+        this.$.sex.verify("Choose a valid sex", function(value){
+          return value === "male" || value === "female"
+        })
+        
+        this.$.comment.verify("Should not start by '.'", function(value){
+          return value === null || !value.startsWith(".")
+        })
+      }
+    })
+  </script>
+</dom-module>
