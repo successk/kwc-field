@@ -10,16 +10,26 @@
         type: Array,
         value: []
       },
-          
+
       /**
        * Has this component at least an error?
+       */
+      hasError: {
+        type: Boolean,
+        computed: "_computeHasError(errors)",
+        reflectToAttribute: true,
+        notify: true
+      },
+
+      /**
+       * Has this component no error?
        * Used to hide .errors div.
        */
       hasNotError: {
         type: Boolean,
         computed: "_computeHasNotError(errors)"
       },
-          
+
       /**
        * Duration before calling async verifications.
        */
@@ -27,7 +37,7 @@
         type: Number,
         value: 500
       },
-          
+
       /**
        * List of verifications from #verifiy
        */
@@ -35,7 +45,7 @@
         type: Array,
         value: []
       },
-          
+
       /**
        * List of async verifications form verifyAsync
        */
@@ -43,7 +53,7 @@
         type: Array,
         value: []
       },
-          
+
       /**
        * This properties is used to avoid setting errors when field was updated another time
        */
@@ -56,16 +66,25 @@
     attached: function () {
       var that = this
       this._onValidated = []
-      Polymer.dom(this).querySelector(".kwc-field-field").addEventListener("input", function (e) {
+      var onChanged = function(e) {
         that._check()
+      }
+      Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field")).forEach(function(e) {
+        e.addEventListener("input", onChanged)
+      })
+      Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field[type=checkbox]")).forEach(function(e) {
+        e.addEventListener("change", onChanged)
+      })
+      Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field[type=radio]")).forEach(function(e) {
+        e.addEventListener("change", onChanged)
       })
       this._check()
     },
-        
+
     /**
      * This field must verify given verification, otherwise, given message will be displayed.
      * The verification function must return true when the value is valid.
-     * 
+     *
      * @param {String} message:        The message to display when invalid
      * @param {function} verification: The function to call to check if the field is valid
      * @return {this}
@@ -77,13 +96,13 @@
       }])
       return this
     },
-        
+
     /**
      * This field must verify given verification, otherwise, given message will be displayed.
      * The verification function must return a promise returning true when the value is valid.
      * Unlike #verify, this method will be called after #delayAsync milliseconds.
      * Its use is for async verification, as an XHR call.
-     * 
+     *
      * @param {String} message:        The message to display when invalid
      * @param {function} verification: The function to call to check if the field is valid
      * @return {this}
@@ -107,15 +126,15 @@
       this._check()
       return this
     },
-    
+
     /**
      * Returns a promise which will check if the field is valid.
      * See #onValidated
      */
-    isValidPromise: function() {
+    isValidPromise: function () {
       var that = this
-      return new Promise(function(resolve){
-        that.onValidated(function(_){
+      return new Promise(function (resolve) {
+        that.onValidated(function (_) {
           resolve(_)
         })
       })
@@ -124,7 +143,7 @@
     /**
      * The input was just updated, check if the new value is valid
      */
-    _check: function (doNotForce) {
+    _check: function () {
       this._currentCheck++
       // Cancel the previous async verification
       if (this._asyncVerificationTimer !== null) {
@@ -144,9 +163,9 @@
         this._fireOnValidated()
       }
     },
-        
+
     /**
-     * Checks all non-async validations and field internal validation. 
+     * Checks all non-async validations and field internal validation.
      */
     _immediateCheck: function () {
       var field = Polymer.dom(this).querySelector(".kwc-field-field")
@@ -161,7 +180,7 @@
       })
       this.errors = errors
     },
-        
+
     /**
      * Calls async verifications and update field errors when terminated.
      */
@@ -184,24 +203,34 @@
         } //else ignore
       })
     },
-        
+
+    /**
+     * See #hasError
+     */
+    _computeHasError: function (errors) {
+      return errors.length != 0
+    },
+
     /**
      * See #hasNotError
      */
-    _computeHasNotError(errors) {
+    _computeHasNotError: function (errors) {
       return errors.length == 0
     },
-    
-    _fireOnValidated() {
+
+    /**
+     * Fires listeners into <tt>#._onValidated</tt>.
+     */
+    _fireOnValidated: function () {
       var result = this.errors.length === 0
       var listeners = this._onValidated
       this._onValidated = []
-      listeners.forEach(function(listener){
+      listeners.forEach(function (listener) {
         listener(result)
       })
     }
   }
-      
+
   /**
    * Current field value
    */
