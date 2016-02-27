@@ -55,6 +55,7 @@
 
     attached: function () {
       var that = this
+      this._onValidated = []
       Polymer.dom(this).querySelector(".kwc-field-field").addEventListener("input", function (e) {
         that._check()
       })
@@ -94,11 +95,36 @@
       }])
       return this
     },
-        
+
+    /**
+     * Listens for the next time the field will be validated (sync and async verifications).
+     * Sends one parameter to listener: the field validation.
+     * Once the listener was called, it will be removed.
+     * Forces the check to trigger the validation.
+     */
+    onValidated: function (listener) {
+      this._onValidated.push(listener)
+      this._check()
+      return this
+    },
+    
+    /**
+     * Returns a promise which will check if the field is valid.
+     * See #onValidated
+     */
+    isValidPromise: function() {
+      var that = this
+      return new Promise(function(resolve){
+        that.onValidated(function(_){
+          resolve(_)
+        })
+      })
+    },
+
     /**
      * The input was just updated, check if the new value is valid
      */
-    _check: function () {
+    _check: function (doNotForce) {
       this._currentCheck++
       // Cancel the previous async verification
       if (this._asyncVerificationTimer !== null) {
@@ -114,6 +140,8 @@
         this._asyncVerificationTimer = setTimeout(function () {
           that._asyncCheck()
         }, this.delayAsync)
+      } else {
+        this._fireOnValidated()
       }
     },
         
@@ -152,6 +180,7 @@
             }
           }
           that.errors = errors
+          that._fireOnValidated()
         } //else ignore
       })
     },
@@ -161,6 +190,15 @@
      */
     _computeHasNotError(errors) {
       return errors.length == 0
+    },
+    
+    _fireOnValidated() {
+      var result = this.errors.length === 0
+      var listeners = this._onValidated
+      this._onValidated = []
+      listeners.forEach(function(listener){
+        listener(result)
+      })
     }
   }
       

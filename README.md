@@ -61,7 +61,7 @@ Or [download as ZIP](https://github.com/successk/kwc-field/archive/master.zip).
         return value !== null && value.length >= 3 // return when the value is valid
       })
       
-      // Wiil be called `delay-async` ms after last input change
+      // Will be called `delay-async` ms after last input change
       this.$.username.verifyAsync("This username is used", function(value){
         // Replace by a server call, need to return a promise
         if (value === "exist" || value === "boss" || value === "a-username-somebody-wont-think-of-it") {
@@ -96,14 +96,20 @@ Selector           | Description
 
 ## Methods
 
-Method        | Parameters                 | Returns     | Description
----           | ---                        | ---         | ---
-verify        | `message`: `String`        | this        | This field must verify given verification, otherwise, given message will be displayed.
-              | `verification`: `function` |             | The verification function must return true when the value is valid.
-verifyAsync   | `message`: `String`        | this        | This field must verify given verification, otherwise, given message will be displayed.
-              | `verification`: `function` |             | The verification function must return a promise returning true when the value is valid.
-              |                            |             | Unlike `verify`, this method will be called after `delay-async` milliseconds.
-              |                            |             | Its use is for async verification, as an XHR call.
+Method         | Parameters                 | Returns     | Description
+---            | ---                        | ---         | ---
+verify         | `message`: `String`        | this        | This field must verify given verification, otherwise, given message will be displayed.
+               | `verification`: `function` |             | The verification function must return true when the value is valid.
+verifyAsync    | `message`: `String`        | this        | This field must verify given verification, otherwise, given message will be displayed.
+               | `verification`: `function` |             | The verification function must return a promise returning true when the value is valid.
+               |                            |             | Unlike `verify`, this method will be called after `delay-async` milliseconds.
+               |                            |             | Its use is for async verification, as an XHR call.
+onValidated    | `listener`: `function`     | this        | Listens for the next time the field will be validated (sync and async verifications).
+               |                            |             | Sends one parameter to listener: the field validation.
+               |                            |             | Once the listener was called, it will be removed.
+               |                            |             | Forces the check to trigger the validation.
+isValidPromise |                            | `Promise`   | Returns a promise which will check if the field is valid. See `#onValidated`
+
 
 ## Events
 
@@ -114,7 +120,7 @@ None      | -        | -
 ## Styles
 
 Name | Default | Description
----  | ---     | --
+---  | ---     | ---
 None | -       | -
 
 This component does not intend to transform fields design, but only add behavior to simplify error management.

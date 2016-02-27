@@ -5,13 +5,14 @@
   <template>
     <kwc-field id="username" delay-async="500">
       <span class="kwc-field-label">Username</span>
-      <input type="text" name="username" required pattern="[a-zA-Z0-9_-]+" maxlength="15" placeholder="Use letters, numbers '_' and '-' only" value="{{user.username::input}}"
-      class="kwc-field-field">
+      <input type="text" name="username" required pattern="[a-zA-Z0-9_-]+" maxlength="15" placeholder="Use letters, numbers '_' and '-' only"
+      value="{{user.username::input}}" class="kwc-field-field">
     </kwc-field>
 
     <kwc-field id="password">
       <span class="kwc-field-label">Password</span>
-      <input type="password" name="password" required placeholder="Your strong password (at least 8 characters)" value="{{user.password::input}}" class="kwc-field-field">
+      <input type="password" name="password" required placeholder="Your strong password (at least 8 characters)" value="{{user.password::input}}"
+      class="kwc-field-field">
     </kwc-field>
 
     <kwc-field id="password2">
@@ -38,6 +39,9 @@
         <option value="other">Other</option>
       </select>
     </kwc-field>
+
+    <button id="validate">Validate</button>
+    <p id="output"></p>
   </template>
 
   <script>
@@ -49,6 +53,10 @@
           type: Object,
           value: {}
         }
+      },
+      
+      listeners: {
+        "validate.tap": "_validateTap"
       },
       
       attached: function() {
@@ -87,6 +95,26 @@
         
         this.$.comment.verify("Should not start by '.'", function(value){
           return value === null || !value.startsWith(".")
+        })
+      },
+      
+      _validateTap: function(e) {
+        e.preventDefault()
+        var that = this
+        this.$.output.innerText = "Validating…"
+        Promise.all([
+          this.$.password.isValidPromise(),
+          this.$.password2.isValidPromise(),
+          this.$.username.isValidPromise(),
+          this.$.email.isValidPromise(),
+          this.$.sex.isValidPromise(),
+          this.$.comment.isValidPromise()
+        ]).then(function(result){
+          if (result.every(function(_){ return _ })) {
+            that.$.output.innerText = "All valid"
+          } else {
+            that.$.output.innerText = "Some invalid"
+          }
         })
       }
     })
