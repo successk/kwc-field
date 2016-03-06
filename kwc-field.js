@@ -39,6 +39,17 @@
       },
 
       /**
+       * The field value.
+       */
+      value: {
+        type: Object,
+        value: null,
+        reflectToAttribute: true,
+        notify: true,
+        observer: "_valueChanged"
+      },
+
+      /**
        * List of verifications from #verifiy
        */
       _verifications: {
@@ -66,16 +77,17 @@
     attached: function () {
       var that = this
       this._onValidated = []
-      var onChanged = function(e) {
+      var onChanged = function (e) {
+        that._updateValue();
         that._check()
       }
-      Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field")).forEach(function(e) {
+      Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field")).forEach(function (e) {
         e.addEventListener("input", onChanged)
       })
-      Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field[type=checkbox]")).forEach(function(e) {
+      Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field[type=checkbox]")).forEach(function (e) {
         e.addEventListener("change", onChanged)
       })
-      Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field[type=radio]")).forEach(function(e) {
+      Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field[type=radio]")).forEach(function (e) {
         e.addEventListener("change", onChanged)
       })
       this._check()
@@ -138,6 +150,27 @@
           resolve(_)
         })
       })
+    },
+
+    /**
+     * When the value is changed, change the value inside internal field.
+     * @param value The new value
+     */
+    _valueChanged: function (value) {
+      var field = Polymer.dom(this).querySelector(".kwc-field-field");
+      if (field.value !== value) {
+        field.value = value;
+      }
+      if (this.isAttached) {
+        this._check();
+      }
+    },
+
+    /**
+     * The value from the field was just updated, updates current value.
+     */
+    _updateValue: function () {
+      this.value = Polymer.dom(this).querySelector(".kwc-field-field").value;
     },
 
     /**
@@ -230,15 +263,6 @@
       })
     }
   }
-
-  /**
-   * Current field value
-   */
-  Object.defineProperty(kwcField, "value", {
-    get: function () {
-      return Polymer.dom(this).querySelector(".kwc-field-field").value
-    }
-  })
 
   Polymer(kwcField)
 })()

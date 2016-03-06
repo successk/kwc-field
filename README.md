@@ -31,23 +31,23 @@ Or [download as ZIP](https://github.com/successk/kwc-field/archive/master.zip).
 ```html
 <!-- Inside template -->
 <!-- delay-async: async verification will be delayed by this number (see documentation of the attribute) -->
-<kwc-field id="username" delay-async="1000">
+<kwc-field id="username" delay-async="1000" value="{{username}}">
   <!-- The component is already wrapped into a label, use .kwc-field-label to include a label text (containing all you want) -->
   <span class="kwc-field-label">Username</span>
   
   <!-- Put any field you want with all basic field verifications as required, pattern, etc. You just need to declare it .kwc-field-field -->
-  <input type="text" name="username" required pattern="[a-zA-Z0-9_-]+" maxlength="15" placeholder="Use letters, numbers '_' and '-' only" value="{{username::input}}"
+  <input type="text" name="username" required pattern="[a-zA-Z0-9_-]+" maxlength="15" placeholder="Use letters, numbers '_' and '-' only"
   class="kwc-field-field">
 </kwc-field>
 
-<kwc-field id="password">
+<kwc-field id="password" value="{{password}}">
   <span class="kwc-field-label">Password</span>
-  <input type="password" name="password" required placeholder="Your strong password (at least 8 characters)" value="{{password::input}}" class="kwc-field-field">
+  <input type="password" name="password" required placeholder="Your strong password (at least 8 characters)" class="kwc-field-field">
 </kwc-field>
 
-<kwc-field id="password2">
+<kwc-field id="password2" value="{{password2}}">
   <span class="kwc-field-label">Confirm</span>
-  <input type="password" name="password2" required placeholder="Confirm your password" value="{{password2::input}}" class="kwc-field-field">
+  <input type="password" name="password2" required placeholder="Confirm your password" class="kwc-field-field">
 </kwc-field>
 
 <script>
@@ -126,6 +126,11 @@ None | -       | -
 This component does not intend to transform fields design, but only add behavior to simplify error management.
 Some styles will appear to help the developer to do whatever he want with this component.
 Please help us helping you by providing your needs in Github issues.
+
+## Limitations
+
+Because of how Polymer works, it seems impossible to listen on field updates by Polymer binding.
+If you want to the field with your data, bind it to the `<kwc-field>` instead of concrete fields (eg. `<input>`).
 
 ## Development
 

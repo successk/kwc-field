@@ -3,41 +3,47 @@
 
 <dom-module id="index-kwc-field-show">
   <template>
-    <kwc-field id="username" delay-async="500">
+    <kwc-field id="username" delay-async="500" value="{{user.username}}">
       <span class="kwc-field-label">Username</span>
-      <input type="text" name="username" required pattern="[a-zA-Z0-9_-]+" maxlength="15" placeholder="Use letters, numbers '_' and '-' only"
-      value="{{user.username::input}}" class="kwc-field-field">
+      <input type="text" name="username" required pattern="[a-zA-Z0-9_-]+" maxlength="15"
+             placeholder="Use letters, numbers '_' and '-' only"
+             class="kwc-field-field">
     </kwc-field>
 
-    <kwc-field id="password">
+    <kwc-field id="password" value="{{user.password}}">
       <span class="kwc-field-label">Password</span>
-      <input type="password" name="password" required placeholder="Your strong password (at least 8 characters)" value="{{user.password::input}}"
-      class="kwc-field-field">
+      <input type="password" name="password" required placeholder="Your strong password (at least 8 characters)"
+             class="kwc-field-field">
     </kwc-field>
 
-    <kwc-field id="password2">
+    <kwc-field id="password2" value="{{user.password2}}">
       <span class="kwc-field-label">Confirm</span>
-      <input type="password" name="password2" required placeholder="Confirm your password" value="{{user.password2::input}}" class="kwc-field-field">
+      <input type="password" name="password2" required placeholder="Confirm your password" class="kwc-field-field">
     </kwc-field>
 
-    <kwc-field id="email" delay-async="1000">
+    <kwc-field id="email" delay-async="1000" value="{{user.email}}">
       <span class="kwc-field-label">Email</span>
-      <input type="email" name="email" required placeholder="Your email address" value="{{user.email::input}}" class="kwc-field-field">
+      <input type="email" name="email" required placeholder="Your email address" class="kwc-field-field">
     </kwc-field>
 
-    <kwc-field id="comment">
+    <kwc-field id="comment" value="{{user.comment}}">
       <span class="kwc-field-label">Comment</span>
-      <textarea name="comment" placeholder="any comment here" value="{{user.comment::input}}" class="kwc-field-field"></textarea>
+      <textarea name="comment" placeholder="any comment here" class="kwc-field-field"></textarea>
     </kwc-field>
 
-    <kwc-field id="sex">
+    <kwc-field id="sex" value="{{user.sex}}">
       <span class="kwc-field-label">Sex</span>
-      <select name="sex" value="{{user.sex::input}}" class="kwc-field-field">
+      <select name="sex" class="kwc-field-field">
         <option value="undefined">Select…</option>
         <option value="male">Male</option>
         <option value="female">Female</option>
         <option value="other">Other</option>
       </select>
+    </kwc-field>
+
+    <kwc-field id="autofill" value="{{autofill}}">
+      <span class="kwc-field-label">Auto filled</span>
+      <input type="text" name="autofill" required placeholder="Auto filled field" class="kwc-field-field"></textarea>
     </kwc-field>
 
     <button id="validate">Validate</button>
@@ -47,58 +53,62 @@
   <script>
     Polymer({
       is: 'index-kwc-field-show',
-      
+
       properties: {
         user: {
           type: Object,
           value: {}
         }
       },
-      
+
       listeners: {
         "validate.tap": "_validateTap"
       },
-      
-      attached: function() {
+
+      attached: function () {
         var that = this
-        this.$.password.verify("The password is too short", function(value){
+        this.$.password.verify("The password is too short", function (value) {
           return value !== null && value.length > 8
         })
-        
-        this.$.password.verify("The password should contains letters", function(value){
+
+        this.$.password.verify("The password should contains letters", function (value) {
           return value !== null && /(.*)[a-zA-Z](.*)/.test(value)
         })
-        
-        this.$.password2.verify("This password must match the first one", function(value){
+
+        this.$.password2.verify("This password must match the first one", function (value) {
           return value !== null && value === that.$.password.value
         })
-        
-        this.$.username.verifyAsync("This username is used", function(value){
+
+        this.$.username.verifyAsync("This username is used", function (value) {
           if (value === "exist" || value === "boss" || value === "a-username-somebody-wont-think-of-it") {
             return Promise.resolve(false)
           } else {
             return Promise.resolve(true)
           }
         })
-        
-        this.$.email.verifyAsync("This email is used", function(value){
-          return new Promise(function(resolve, reject){
-            setTimeout(function(){
+
+        this.$.email.verifyAsync("This email is used", function (value) {
+          return new Promise(function (resolve, reject) {
+            setTimeout(function () {
               resolve(value !== "ex@ist")
             }, 1000)
           })
         })
-        
-        this.$.sex.verify("Choose a valid sex", function(value){
+
+        this.$.sex.verify("Choose a valid sex", function (value) {
           return value === "male" || value === "female"
         })
-        
-        this.$.comment.verify("Should not start by '.'", function(value){
+
+        this.$.comment.verify("Should not start by '.'", function (value) {
           return value === null || !value.startsWith(".")
         })
+
+        setTimeout(function () {
+          that.autofill = "Some string"
+        }, 1000)
       },
-      
-      _validateTap: function(e) {
+
+      _validateTap: function (e) {
         e.preventDefault()
         var that = this
         this.$.output.innerText = "Validating…"
@@ -109,9 +119,11 @@
           this.$.email.isValidPromise(),
           this.$.sex.isValidPromise(),
           this.$.comment.isValidPromise()
-        ]).then(function(result){
-          if (result.every(function(_){ return _ })) {
-            that.$.output.innerText = "All valid"
+        ]).then(function (result) {
+          if (result.every(function (_) {
+                return _
+              })) {
+            that.$.output.innerText = "All valid (object: " + JSON.stringify(that.user) + ")"
           } else {
             that.$.output.innerText = "Some invalid"
           }
