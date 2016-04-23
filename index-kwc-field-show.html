@@ -46,8 +46,14 @@
       <input type="text" name="autofill" required placeholder="Auto filled field" class="kwc-field-field"></textarea>
     </kwc-field>
 
+    <kwc-field id="accept">
+      <span class="kwc-field-label">Accept</span>
+      <input type="checkbox" name="accept" required class="kwc-field-field"/>
+    </kwc-field>
+
     <button id="validate">Validate</button>
     <p id="output"></p>
+    <p id="accepted">Not accepted</p>
   </template>
 
   <script>
@@ -62,7 +68,8 @@
       },
 
       listeners: {
-        "validate.tap": "_validateTap"
+        "validate.tap": "_validateTap",
+        "accept.value-changed": "_acceptChanged"
       },
 
       attached: function () {
@@ -128,6 +135,10 @@
             that.$.output.innerText = "Some invalid"
           }
         })
+      },
+
+      _acceptChanged: function (e) {
+        this.$.accepted.textContent = "Accept: " + e.detail.value;
       }
     })
   </script>

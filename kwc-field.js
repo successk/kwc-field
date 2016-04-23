@@ -1,4 +1,6 @@
 (function () {
+  "use strict";
+
   var kwcField = {
     is: 'kwc-field',
 
@@ -77,18 +79,23 @@
     attached: function () {
       var that = this
       this._onValidated = []
-      var onChanged = function (e) {
-        that._updateValue();
-        that._check()
-      }
       Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field")).forEach(function (e) {
-        e.addEventListener("input", onChanged)
+        e.addEventListener("input", function(e){
+          that.value = e.target.value;
+          that._check()
+        })
       })
       Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field[type=checkbox]")).forEach(function (e) {
-        e.addEventListener("change", onChanged)
+        e.addEventListener("change", function(e){
+          that.value = e.target.checked;
+          that._check()
+        })
       })
       Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field[type=radio]")).forEach(function (e) {
-        e.addEventListener("change", onChanged)
+        e.addEventListener("change", function(e){
+          that.value = e.target.checked;
+          that._check()
+        })
       })
       this._check()
     },
@@ -164,13 +171,6 @@
       if (this.isAttached) {
         this._check();
       }
-    },
-
-    /**
-     * The value from the field was just updated, updates current value.
-     */
-    _updateValue: function () {
-      this.value = Polymer.dom(this).querySelector(".kwc-field-field").value;
     },
 
     /**
