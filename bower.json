@@ -1,6 +1,6 @@
 {
   "name": "kwc-field",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "This component shows a field and helps to manage validation",
   "license": "MIT",
   "main": "kwc-field.html",
