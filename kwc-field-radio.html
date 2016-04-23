@@ -1,0 +1,70 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<dom-module id="kwc-field-radio">
+  <template>
+    <style>
+      :host {
+        display: flex;
+        width: 100%;
+      }
+
+      :host > ::content > * {
+        flex-grow: 1;
+        text-align: center;
+      }
+    </style>
+
+    <content></content>
+  </template>
+
+  <script>
+    Polymer({
+      is: "kwc-field-radio",
+
+      properties: {
+        value: {
+          type: String,
+          value: null,
+          reflectToAttribute: true,
+          notify: true
+        },
+
+        required: {
+          type: Boolean,
+          value: false
+        },
+
+        requiredMessage: {
+          type: String,
+          value: "Please select a value"
+        },
+
+        validationMessage: {
+          type: String,
+          value: null,
+          readOnly: true
+        }
+      },
+
+      attached: function () {
+        var that = this
+        Array.from(Polymer.dom(this).querySelectorAll("input[type=radio]")).forEach(function (elt) {
+          elt.addEventListener("change", function (e) {
+            if (e.target && e.target.checked) {
+              that.value = e.target.value
+            }
+          })
+        })
+      },
+
+      checkValidity: function() {
+        if (this.required && !this.value) {
+          this._setValidationMessage(this.requiredMessage);
+          return false;
+        } else {
+          return true;
+        }
+      }
+    });
+  </script>
+</dom-module>

@@ -127,6 +127,37 @@ This component does not intend to transform fields design, but only add behavior
 Some styles will appear to help the developer to do whatever he want with this component.
 Please help us helping you by providing your needs in Github issues.
 
+## Radio elements
+
+If you want to use radio elements, you need to use `kwc-field-radio`.
+Below an example of use.
+You can see `index-kwc-field-show.html` for a complete example.
+
+```html
+<kwc-field value="{{sex}}">
+  <span class="kwc-field-label">Sex</span>
+  <kwc-field-radio class="kwc-field-field" required>
+    <label>
+        Male
+        <input type="radio" name="sex" value="m"/>
+    </label>
+    <label>
+        Female
+        <input type="radio" name="sex" value="f"/>
+    </label>
+  </kwc-field-radio>
+</kwc-field>
+```
+
+## Custom field elements
+
+You can create your own custom field elements (as `kwc-field-radio` do).
+To do so, you just need to create an element with these properties and functions:
+
+* checkValidity(): Is the component valid?
+* validationMessage: What is the validation message?
+* See https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Forms/Data_form_validation#The_HTML5_constraint_validation_API
+
 ## Limitations
 
 Because of how Polymer works, it seems impossible to listen on field updates by Polymer binding.

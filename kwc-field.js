@@ -85,13 +85,13 @@
           that._check()
         })
       })
-      Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field[type=checkbox]")).forEach(function (e) {
-        e.addEventListener("change", function(e){
-          that.value = e.target.checked;
+      Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field")).forEach(function (e) {
+        e.addEventListener("value-changed", function(e){
+          that.value = e.target.value;
           that._check()
         })
       })
-      Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field[type=radio]")).forEach(function (e) {
+      Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field[type=checkbox]")).forEach(function (e) {
         e.addEventListener("change", function(e){
           that.value = e.target.checked;
           that._check()

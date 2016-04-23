@@ -46,9 +46,31 @@
       <input type="text" name="autofill" required placeholder="Auto filled field" class="kwc-field-field"></textarea>
     </kwc-field>
 
-    <kwc-field id="accept">
+    <kwc-field id="accept" value="{{user.accept}}">
       <span class="kwc-field-label">Accept</span>
       <input type="checkbox" name="accept" required class="kwc-field-field"/>
+    </kwc-field>
+
+    <kwc-field id="season" value="{{user.season}}">
+      <span class="kwc-field-label">Season</span>
+      <kwc-field-radio class="kwc-field-field" required>
+        <label>
+          Spring
+          <input type="radio" name="season" value="spring"/>
+        </label>
+        <label>
+          Summer
+          <input type="radio" name="season" value="summer"/>
+        </label>
+        <label>
+          Autumn
+          <input type="radio" name="season" value="autumn"/>
+        </label>
+        <label>
+          Winter
+          <input type="radio" name="season" value="winter"/>
+        </label>
+      </kwc-field-radio>
     </kwc-field>
 
     <button id="validate">Validate</button>
