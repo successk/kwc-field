@@ -80,19 +80,19 @@
       var that = this
       this._onValidated = []
       Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field")).forEach(function (e) {
-        e.addEventListener("input", function(e){
+        e.addEventListener("input", function (e) {
           that.value = e.target.value;
           that._check()
         })
       })
       Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field")).forEach(function (e) {
-        e.addEventListener("value-changed", function(e){
+        e.addEventListener("value-changed", function (e) {
           that.value = e.target.value;
           that._check()
         })
       })
       Array.from(Polymer.dom(this).querySelectorAll(".kwc-field-field[type=checkbox]")).forEach(function (e) {
-        e.addEventListener("change", function(e){
+        e.addEventListener("change", function (e) {
           that.value = e.target.checked;
           that._check()
         })
@@ -165,7 +165,9 @@
      */
     _valueChanged: function (value) {
       var field = Polymer.dom(this).querySelector(".kwc-field-field");
-      if (field.value !== value) {
+      if (field.type && field.type === "checkbox") {
+        field.checked = value;
+      } else if (field.value !== value) {
         field.value = value;
       }
       if (this.isAttached) {

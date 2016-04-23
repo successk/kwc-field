@@ -51,6 +51,11 @@
       <input type="checkbox" name="accept" required class="kwc-field-field"/>
     </kwc-field>
 
+    <kwc-field id="checked" value="{{user.checked}}">
+      <span class="kwc-field-label">checked</span>
+      <input type="checkbox" name="checked" class="kwc-field-field"/>
+    </kwc-field>
+
     <kwc-field id="season" value="{{user.season}}">
       <span class="kwc-field-label">Season</span>
       <kwc-field-radio class="kwc-field-field" required>
@@ -85,7 +90,9 @@
       properties: {
         user: {
           type: Object,
-          value: {}
+          value: {
+            checked: true
+          }
         }
       },
 
